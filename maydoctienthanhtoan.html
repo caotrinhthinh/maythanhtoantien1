@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đọc Văn Bản Tiếng Việt</title>
+</head>
+<body>
+  <h1>Chuyển Văn Bản Thành Giọng Nói Tiếng Việt</h1>
+  <textarea id="textToRead" rows="5" cols="40" placeholder="Nhập văn bản tiếng Việt để đọc..."></textarea><br>
+  <button id="readButton">Đọc Văn Bản</button>
+  <button id="stopButton">Dừng Đọc</button>
+
+  <script>
+    const readButton = document.getElementById("readButton");
+    const stopButton = document.getElementById("stopButton");
+
+    // Lưu trữ danh sách giọng nói
+    let voices = [];
+
+    // Lấy danh sách giọng nói khi trình duyệt đã tải
+    window.speechSynthesis.onvoiceschanged = () => {
+      voices = window.speechSynthesis.getVoices();
+    };
+
+    // Xử lý sự kiện khi nhấn nút "Đọc Văn Bản"
+    readButton.addEventListener("click", () => {
+      const text = document.getElementById("textToRead").value;
+
+      if (text.trim() === "") {
+        alert("Hãy nhập văn bản để đọc!");
+        return;
+      }
+
+      // Tạo đối tượng SpeechSynthesisUtterance
+      const speech = new SpeechSynthesisUtterance();
+      speech.text = text;
+
+      // Chọn giọng nói tiếng Việt
+      const vietnameseVoice = voices.find(voice => voice.lang === 'vi-VN');
+      if (vietnameseVoice) {
+        speech.voice = vietnameseVoice;
+      } else {
+        alert("Trình duyệt của bạn không hỗ trợ giọng nói tiếng Việt.");
+        return;
+      }
+
+      // Cài đặt ngôn ngữ và tốc độ đọc
+      speech.lang = 'vi-VN';
+      speech.rate = 1;
+
+      // Bắt đầu đọc văn bản
+      window.speechSynthesis.speak(speech);
+    });
+
+    // Xử lý sự kiện khi nhấn nút "Dừng Đọc"
+    stopButton.addEventListener("click", () => {
+      window.speechSynthesis.cancel(); // Dừng đọc ngay lập tức
+    });
+  </script>
+</body>
+</html>
